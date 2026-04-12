@@ -20,7 +20,7 @@
     <properties>
         <java.version>17</java.version>
         <milvus-sdk.version>2.4.3</milvus-sdk.version>
-        <minio.version>8.5.13</minio.version>
+        <minio.version>8.6.0</minio.version>
         <springdoc.version>2.6.0</springdoc.version>
     </properties>
 

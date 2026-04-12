@@ -1,13 +1,15 @@
 package com.smartaftercare.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
 
 /**
- * 用户模型（可选，用于管理上传者和查询记录）
+ * 用户模型
  */
 @Data
 @Entity
@@ -24,6 +26,7 @@ public class User {
     @Column(name = "created_at")
     private LocalDateTime createdAt;
 
+    @UpdateTimestamp
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
@@ -33,6 +36,10 @@ public class User {
     @Column(nullable = false, unique = true, length = 100)
     private String username;
 
+    @JsonIgnore
+    @Column(nullable = false)
+    private String password;
+
     @Column(length = 100)
     private String nickname;
 
@@ -41,4 +48,7 @@ public class User {
 
     @Column(length = 20)
     private String status = "active";
+
+    @Column(name = "last_login_at")
+    private LocalDateTime lastLoginAt;
 }

@@ -11,6 +11,7 @@ import org.springframework.stereotype.Repository;
 import java.time.Duration;
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Redis 缓存数据访问层
@@ -97,6 +98,10 @@ public class RedisRepository {
      */
     public void set(String key, String value, Duration expiration) {
         redisTemplate.opsForValue().set(key, value, expiration);
+    }
+
+    public void set(String key, String value, long timeout, TimeUnit unit) {
+        redisTemplate.opsForValue().set(key, value, timeout, unit);
     }
 
     public String get(String key) {

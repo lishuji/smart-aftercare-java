@@ -641,6 +641,350 @@
             to { transform: rotate(360deg); }
         }
 
+        /* ==================== 登录/注册页 ==================== */
+        .auth-overlay {
+            position: fixed;
+            inset: 0;
+            z-index: 1000;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: authFadeIn 0.4s ease;
+        }
+
+        .auth-overlay.hidden {
+            display: none;
+        }
+
+        @keyframes authFadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .auth-card {
+            background: var(--surface);
+            border-radius: 20px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            width: 420px;
+            max-width: 90vw;
+            overflow: hidden;
+            animation: authSlideUp 0.5s ease;
+        }
+
+        @keyframes authSlideUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .auth-header {
+            text-align: center;
+            padding: 36px 32px 24px;
+        }
+
+        .auth-header .auth-logo {
+            width: 56px;
+            height: 56px;
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
+            border-radius: 16px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 16px;
+        }
+
+        .auth-header .auth-logo svg {
+            width: 28px;
+            height: 28px;
+            color: white;
+        }
+
+        .auth-header h2 {
+            font-size: 22px;
+            font-weight: 700;
+            color: var(--text);
+            margin-bottom: 4px;
+        }
+
+        .auth-header p {
+            font-size: 14px;
+            color: var(--text-secondary);
+        }
+
+        .auth-tabs {
+            display: flex;
+            border-bottom: 1px solid var(--border);
+            margin: 0 32px;
+        }
+
+        .auth-tab {
+            flex: 1;
+            padding: 12px;
+            text-align: center;
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-secondary);
+            cursor: pointer;
+            border: none;
+            background: none;
+            position: relative;
+            transition: color 0.2s;
+        }
+
+        .auth-tab:hover {
+            color: var(--text);
+        }
+
+        .auth-tab.active {
+            color: var(--primary);
+        }
+
+        .auth-tab.active::after {
+            content: '';
+            position: absolute;
+            bottom: -1px;
+            left: 16px;
+            right: 16px;
+            height: 2px;
+            background: var(--primary);
+            border-radius: 2px 2px 0 0;
+        }
+
+        .auth-form-wrapper {
+            padding: 24px 32px 32px;
+        }
+
+        .auth-form {
+            display: none;
+        }
+
+        .auth-form.active {
+            display: block;
+            animation: authFormIn 0.3s ease;
+        }
+
+        @keyframes authFormIn {
+            from { opacity: 0; transform: translateX(10px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        .auth-field {
+            margin-bottom: 18px;
+        }
+
+        .auth-field label {
+            display: block;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text);
+            margin-bottom: 6px;
+        }
+
+        .auth-field .input-wrapper {
+            position: relative;
+        }
+
+        .auth-field .input-wrapper svg {
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 18px;
+            height: 18px;
+            color: var(--text-secondary);
+            pointer-events: none;
+        }
+
+        .auth-field input {
+            width: 100%;
+            padding: 11px 14px 11px 40px;
+            border: 1.5px solid var(--border);
+            border-radius: var(--radius-sm);
+            font-size: 14px;
+            outline: none;
+            transition: all 0.2s;
+            background: #FAFBFC;
+        }
+
+        .auth-field input:focus {
+            border-color: var(--primary);
+            background: var(--surface);
+            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+        }
+
+        .auth-field input::placeholder {
+            color: #94A3B8;
+        }
+
+        .auth-submit {
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            border: none;
+            border-radius: var(--radius-sm);
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            margin-top: 6px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .auth-submit:hover {
+            box-shadow: 0 4px 12px rgba(79, 70, 229, 0.4);
+            transform: translateY(-1px);
+        }
+
+        .auth-submit:active {
+            transform: translateY(0);
+        }
+
+        .auth-submit:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .auth-error {
+            background: #FEF2F2;
+            color: #DC2626;
+            padding: 10px 14px;
+            border-radius: var(--radius-sm);
+            font-size: 13px;
+            margin-bottom: 16px;
+            display: none;
+            align-items: center;
+            gap: 8px;
+            animation: authShake 0.3s ease;
+        }
+
+        .auth-error.show {
+            display: flex;
+        }
+
+        @keyframes authShake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-4px); }
+            75% { transform: translateX(4px); }
+        }
+
+        .auth-success {
+            background: #ECFDF5;
+            color: #059669;
+            padding: 10px 14px;
+            border-radius: var(--radius-sm);
+            font-size: 13px;
+            margin-bottom: 16px;
+            display: none;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .auth-success.show {
+            display: flex;
+        }
+
+        /* 用户菜单 */
+        .user-menu {
+            position: relative;
+        }
+
+        .user-menu-trigger {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 12px;
+            border-radius: var(--radius-sm);
+            border: 1px solid var(--border);
+            background: var(--surface);
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 13px;
+            color: var(--text);
+        }
+
+        .user-menu-trigger:hover {
+            background: #F1F5F9;
+            border-color: var(--primary-light);
+        }
+
+        .user-avatar-sm {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        .user-menu-dropdown {
+            position: absolute;
+            top: calc(100% + 6px);
+            right: 0;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            box-shadow: var(--shadow-lg);
+            min-width: 180px;
+            z-index: 200;
+            display: none;
+            animation: dropIn 0.15s ease;
+        }
+
+        .user-menu-dropdown.show {
+            display: block;
+        }
+
+        @keyframes dropIn {
+            from { opacity: 0; transform: translateY(-4px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .user-menu-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            width: 100%;
+            padding: 10px 16px;
+            border: none;
+            background: none;
+            cursor: pointer;
+            font-size: 13px;
+            color: var(--text);
+            transition: background 0.15s;
+        }
+
+        .user-menu-item:hover {
+            background: #F1F5F9;
+        }
+
+        .user-menu-item svg {
+            width: 16px;
+            height: 16px;
+            color: var(--text-secondary);
+        }
+
+        .user-menu-divider {
+            height: 1px;
+            background: var(--border);
+            margin: 4px 0;
+        }
+
+        .user-menu-item.danger {
+            color: var(--error);
+        }
+
+        .user-menu-item.danger svg {
+            color: var(--error);
+        }
+
         /* ==================== 响应式 ==================== */
         @media (max-width: 640px) {
             .navbar { padding: 0 16px; }
@@ -649,6 +993,10 @@
             .message { max-width: 95%; }
             .input-filters { flex-wrap: wrap; }
             .filter-input { width: 100%; }
+            .auth-card { width: 100%; max-width: 100vw; border-radius: 0; min-height: 100vh; }
+            .auth-header { padding: 48px 24px 24px; }
+            .auth-tabs { margin: 0 24px; }
+            .auth-form-wrapper { padding: 24px; }
         }
     </style>
 </head>
@@ -666,11 +1014,139 @@
             <button class="nav-item" onclick="switchPage('error-code')">🔧 故障代码</button>
             <button class="nav-item" onclick="switchPage('docs')">📄 文档管理</button>
         </div>
-        <div class="navbar-status">
-            <span class="status-dot" id="statusDot"></span>
-            <span id="statusText">已连接</span>
+        <div style="display: flex; align-items: center; gap: 12px;">
+            <div class="navbar-status">
+                <span class="status-dot" id="statusDot"></span>
+                <span id="statusText">已连接</span>
+            </div>
+            <div class="user-menu" id="userMenu" style="display: none;">
+                <button class="user-menu-trigger" onclick="toggleUserMenu()">
+                    <div class="user-avatar-sm" id="userAvatarText">U</div>
+                    <span id="userDisplayName">用户</span>
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14">
+                        <polyline points="6 9 12 15 18 9"/>
+                    </svg>
+                </button>
+                <div class="user-menu-dropdown" id="userMenuDropdown">
+                    <div style="padding: 12px 16px; border-bottom: 1px solid var(--border);">
+                        <div style="font-size: 14px; font-weight: 600;" id="menuUsername">用户</div>
+                        <div style="font-size: 12px; color: var(--text-secondary);" id="menuRole">普通用户</div>
+                    </div>
+                    <button class="user-menu-item" onclick="showChangePassword()">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0110 0v4"/>
+                        </svg>
+                        修改密码
+                    </button>
+                    <div class="user-menu-divider"></div>
+                    <button class="user-menu-item danger" onclick="doLogout()">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/>
+                        </svg>
+                        退出登录
+                    </button>
+                </div>
+            </div>
         </div>
     </nav>
+
+    <!-- ==================== 登录/注册覆盖层 ==================== -->
+    <div class="auth-overlay" id="authOverlay">
+        <div class="auth-card">
+            <div class="auth-header">
+                <div class="auth-logo">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+                    </svg>
+                </div>
+                <h2>智能售后服务系统</h2>
+                <p>登录以使用全部功能</p>
+            </div>
+
+            <div class="auth-tabs">
+                <button class="auth-tab active" onclick="switchAuthTab('login')">登录</button>
+                <button class="auth-tab" onclick="switchAuthTab('register')">注册</button>
+            </div>
+
+            <div class="auth-form-wrapper">
+                <!-- 登录表单 -->
+                <form class="auth-form active" id="loginForm" onsubmit="handleLogin(event)">
+                    <div class="auth-error" id="loginError">
+                        <span>⚠️</span>
+                        <span id="loginErrorText">错误信息</span>
+                    </div>
+                    <div class="auth-field">
+                        <label>用户名</label>
+                        <div class="input-wrapper">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/>
+                            </svg>
+                            <input type="text" id="loginUsername" placeholder="请输入用户名" autocomplete="username" required>
+                        </div>
+                    </div>
+                    <div class="auth-field">
+                        <label>密码</label>
+                        <div class="input-wrapper">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0110 0v4"/>
+                            </svg>
+                            <input type="password" id="loginPassword" placeholder="请输入密码" autocomplete="current-password" required>
+                        </div>
+                    </div>
+                    <button type="submit" class="auth-submit" id="loginBtn">登 录</button>
+                </form>
+
+                <!-- 注册表单 -->
+                <form class="auth-form" id="registerForm" onsubmit="handleRegister(event)">
+                    <div class="auth-error" id="registerError">
+                        <span>⚠️</span>
+                        <span id="registerErrorText">错误信息</span>
+                    </div>
+                    <div class="auth-success" id="registerSuccess">
+                        <span>✅</span>
+                        <span id="registerSuccessText">注册成功</span>
+                    </div>
+                    <div class="auth-field">
+                        <label>用户名</label>
+                        <div class="input-wrapper">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/>
+                            </svg>
+                            <input type="text" id="regUsername" placeholder="2-50个字符" autocomplete="username" required minlength="2" maxlength="50">
+                        </div>
+                    </div>
+                    <div class="auth-field">
+                        <label>昵称（可选）</label>
+                        <div class="input-wrapper">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/>
+                            </svg>
+                            <input type="text" id="regNickname" placeholder="给自己取个名字吧">
+                        </div>
+                    </div>
+                    <div class="auth-field">
+                        <label>密码</label>
+                        <div class="input-wrapper">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0110 0v4"/>
+                            </svg>
+                            <input type="password" id="regPassword" placeholder="至少6个字符" autocomplete="new-password" required minlength="6">
+                        </div>
+                    </div>
+                    <div class="auth-field">
+                        <label>确认密码</label>
+                        <div class="input-wrapper">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                            </svg>
+                            <input type="password" id="regPasswordConfirm" placeholder="再次输入密码" autocomplete="new-password" required minlength="6">
+                        </div>
+                    </div>
+                    <button type="submit" class="auth-submit" id="registerBtn">注 册</button>
+                </form>
+            </div>
+        </div>
+    </div>
 
     <div class="main">
         <!-- ==================== 智能问答页 ==================== -->
@@ -807,6 +1283,343 @@
     <script>
         const API_BASE = '/api';
 
+        // ==================== Token 管理 ====================
+        const TokenManager = {
+            getAccessToken() {
+                return localStorage.getItem('access_token');
+            },
+            getRefreshToken() {
+                return localStorage.getItem('refresh_token');
+            },
+            setTokens(accessToken, refreshToken, expiresIn) {
+                localStorage.setItem('access_token', accessToken);
+                localStorage.setItem('refresh_token', refreshToken);
+                localStorage.setItem('token_expires_at', Date.now() + expiresIn * 1000);
+            },
+            clearTokens() {
+                localStorage.removeItem('access_token');
+                localStorage.removeItem('refresh_token');
+                localStorage.removeItem('token_expires_at');
+                localStorage.removeItem('user_info');
+            },
+            isLoggedIn() {
+                return !!this.getAccessToken();
+            },
+            isTokenExpiringSoon() {
+                const expiresAt = parseInt(localStorage.getItem('token_expires_at') || '0');
+                // 提前 60 秒刷新
+                return Date.now() > expiresAt - 60000;
+            },
+            getUserInfo() {
+                try {
+                    return JSON.parse(localStorage.getItem('user_info') || 'null');
+                } catch { return null; }
+            },
+            setUserInfo(info) {
+                localStorage.setItem('user_info', JSON.stringify(info));
+            }
+        };
+
+        // 带认证的 fetch 封装
+        async function authFetch(url, options = {}) {
+            // 如果 Token 快过期，先尝试刷新
+            if (TokenManager.isLoggedIn() && TokenManager.isTokenExpiringSoon()) {
+                await tryRefreshToken();
+            }
+
+            const token = TokenManager.getAccessToken();
+            if (token) {
+                options.headers = options.headers || {};
+                if (!(options.body instanceof FormData)) {
+                    // FormData 不要手动设 Content-Type
+                    options.headers['Content-Type'] = options.headers['Content-Type'] || 'application/json';
+                }
+                options.headers['Authorization'] = 'Bearer ' + token;
+            }
+
+            const res = await fetch(url, options);
+
+            // 401 自动尝试刷新 Token
+            if (res.status === 401 && TokenManager.getRefreshToken()) {
+                const refreshed = await tryRefreshToken();
+                if (refreshed) {
+                    // 重新设置 Authorization
+                    options.headers['Authorization'] = 'Bearer ' + TokenManager.getAccessToken();
+                    return fetch(url, options);
+                } else {
+                    // 刷新失败，跳转登录
+                    showAuthOverlay();
+                    throw new Error('认证已过期，请重新登录');
+                }
+            }
+
+            if (res.status === 401) {
+                showAuthOverlay();
+                throw new Error('请先登录');
+            }
+
+            return res;
+        }
+
+        async function tryRefreshToken() {
+            const refreshToken = TokenManager.getRefreshToken();
+            if (!refreshToken) return false;
+
+            try {
+                const res = await fetch(API_BASE + '/auth/refresh', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ refreshToken })
+                });
+                const data = await res.json();
+                if (data.code === 200 && data.data) {
+                    TokenManager.setTokens(data.data.access_token, data.data.refresh_token, data.data.expires_in);
+                    return true;
+                }
+            } catch { /* 忽略刷新错误 */ }
+
+            TokenManager.clearTokens();
+            return false;
+        }
+
+        // ==================== 认证 UI ====================
+        function switchAuthTab(tab) {
+            document.querySelectorAll('.auth-tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.auth-form').forEach(f => f.classList.remove('active'));
+
+            if (tab === 'login') {
+                document.querySelectorAll('.auth-tab')[0].classList.add('active');
+                document.getElementById('loginForm').classList.add('active');
+            } else {
+                document.querySelectorAll('.auth-tab')[1].classList.add('active');
+                document.getElementById('registerForm').classList.add('active');
+            }
+
+            // 清除错误提示
+            document.querySelectorAll('.auth-error, .auth-success').forEach(e => e.classList.remove('show'));
+        }
+
+        function showAuthOverlay() {
+            document.getElementById('authOverlay').classList.remove('hidden');
+        }
+
+        function hideAuthOverlay() {
+            document.getElementById('authOverlay').classList.add('hidden');
+        }
+
+        async function handleLogin(e) {
+            e.preventDefault();
+            const btn = document.getElementById('loginBtn');
+            const errorEl = document.getElementById('loginError');
+            const errorText = document.getElementById('loginErrorText');
+
+            const username = document.getElementById('loginUsername').value.trim();
+            const password = document.getElementById('loginPassword').value;
+
+            if (!username || !password) {
+                errorText.textContent = '请填写用户名和密码';
+                errorEl.classList.add('show');
+                return;
+            }
+
+            btn.disabled = true;
+            btn.textContent = '登录中...';
+            errorEl.classList.remove('show');
+
+            try {
+                const res = await fetch(API_BASE + '/auth/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username, password })
+                });
+                const data = await res.json();
+
+                if (data.code === 200 && data.data) {
+                    TokenManager.setTokens(data.data.access_token, data.data.refresh_token, data.data.expires_in);
+                    // 获取用户信息
+                    await fetchUserInfo();
+                    hideAuthOverlay();
+                    updateUserUI();
+                    // 清空表单
+                    document.getElementById('loginUsername').value = '';
+                    document.getElementById('loginPassword').value = '';
+                } else {
+                    errorText.textContent = data.message || '登录失败';
+                    errorEl.classList.add('show');
+                }
+            } catch (err) {
+                errorText.textContent = '网络错误，请检查服务是否运行';
+                errorEl.classList.add('show');
+            }
+
+            btn.disabled = false;
+            btn.textContent = '登 录';
+        }
+
+        async function handleRegister(e) {
+            e.preventDefault();
+            const btn = document.getElementById('registerBtn');
+            const errorEl = document.getElementById('registerError');
+            const errorText = document.getElementById('registerErrorText');
+            const successEl = document.getElementById('registerSuccess');
+            const successText = document.getElementById('registerSuccessText');
+
+            const username = document.getElementById('regUsername').value.trim();
+            const nickname = document.getElementById('regNickname').value.trim();
+            const password = document.getElementById('regPassword').value;
+            const passwordConfirm = document.getElementById('regPasswordConfirm').value;
+
+            errorEl.classList.remove('show');
+            successEl.classList.remove('show');
+
+            if (!username || !password) {
+                errorText.textContent = '请填写用户名和密码';
+                errorEl.classList.add('show');
+                return;
+            }
+
+            if (password !== passwordConfirm) {
+                errorText.textContent = '两次输入的密码不一致';
+                errorEl.classList.add('show');
+                return;
+            }
+
+            if (password.length < 6) {
+                errorText.textContent = '密码至少需要6个字符';
+                errorEl.classList.add('show');
+                return;
+            }
+
+            btn.disabled = true;
+            btn.textContent = '注册中...';
+
+            try {
+                const res = await fetch(API_BASE + '/auth/register', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username, password, nickname: nickname || null })
+                });
+                const data = await res.json();
+
+                if (data.code === 200) {
+                    successText.textContent = '注册成功！正在自动登录...';
+                    successEl.classList.add('show');
+                    // 自动登录
+                    setTimeout(async () => {
+                        const loginRes = await fetch(API_BASE + '/auth/login', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ username, password })
+                        });
+                        const loginData = await loginRes.json();
+                        if (loginData.code === 200 && loginData.data) {
+                            TokenManager.setTokens(loginData.data.access_token, loginData.data.refresh_token, loginData.data.expires_in);
+                            await fetchUserInfo();
+                            hideAuthOverlay();
+                            updateUserUI();
+                            // 清空表单
+                            document.getElementById('regUsername').value = '';
+                            document.getElementById('regNickname').value = '';
+                            document.getElementById('regPassword').value = '';
+                            document.getElementById('regPasswordConfirm').value = '';
+                            successEl.classList.remove('show');
+                        }
+                    }, 800);
+                } else {
+                    errorText.textContent = data.message || '注册失败';
+                    errorEl.classList.add('show');
+                }
+            } catch (err) {
+                errorText.textContent = '网络错误，请检查服务是否运行';
+                errorEl.classList.add('show');
+            }
+
+            btn.disabled = false;
+            btn.textContent = '注 册';
+        }
+
+        async function fetchUserInfo() {
+            try {
+                const res = await authFetch(API_BASE + '/auth/me');
+                const data = await res.json();
+                if (data.code === 200 && data.data) {
+                    TokenManager.setUserInfo(data.data);
+                }
+            } catch { /* 忽略 */ }
+        }
+
+        function updateUserUI() {
+            const userMenu = document.getElementById('userMenu');
+            const info = TokenManager.getUserInfo();
+
+            if (TokenManager.isLoggedIn() && info) {
+                userMenu.style.display = '';
+                const displayName = info.username || '用户';
+                const initial = displayName.charAt(0).toUpperCase();
+                document.getElementById('userAvatarText').textContent = initial;
+                document.getElementById('userDisplayName').textContent = displayName;
+                document.getElementById('menuUsername').textContent = displayName;
+                const role = (info.role || '').replace('ROLE_', '');
+                document.getElementById('menuRole').textContent = role === 'ADMIN' ? '管理员' : '普通用户';
+            } else {
+                userMenu.style.display = 'none';
+            }
+        }
+
+        function toggleUserMenu() {
+            const dropdown = document.getElementById('userMenuDropdown');
+            dropdown.classList.toggle('show');
+        }
+
+        // 点击空白区域关闭下拉菜单
+        document.addEventListener('click', (e) => {
+            const menu = document.getElementById('userMenu');
+            if (!menu.contains(e.target)) {
+                document.getElementById('userMenuDropdown').classList.remove('show');
+            }
+        });
+
+        async function doLogout() {
+            try {
+                await authFetch(API_BASE + '/auth/logout', { method: 'POST' });
+            } catch { /* 忽略 */ }
+            TokenManager.clearTokens();
+            updateUserUI();
+            showAuthOverlay();
+            document.getElementById('userMenuDropdown').classList.remove('show');
+        }
+
+        function showChangePassword() {
+            document.getElementById('userMenuDropdown').classList.remove('show');
+            const oldPwd = prompt('请输入当前密码：');
+            if (!oldPwd) return;
+            const newPwd = prompt('请输入新密码（至少6位）：');
+            if (!newPwd || newPwd.length < 6) {
+                alert('新密码至少需要6个字符');
+                return;
+            }
+            const confirmPwd = prompt('请再次输入新密码：');
+            if (newPwd !== confirmPwd) {
+                alert('两次输入的密码不一致');
+                return;
+            }
+
+            authFetch(API_BASE + '/auth/change-password', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ oldPassword: oldPwd, newPassword: newPwd })
+            }).then(res => res.json()).then(data => {
+                if (data.code === 200) {
+                    alert('✅ 密码修改成功，请重新登录');
+                    TokenManager.clearTokens();
+                    updateUserUI();
+                    showAuthOverlay();
+                } else {
+                    alert('❌ ' + (data.message || '修改失败'));
+                }
+            }).catch(() => alert('❌ 网络错误'));
+        }
+
         // ==================== 页面切换 ====================
         function switchPage(page) {
             document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
@@ -882,7 +1695,7 @@
             document.getElementById('sendBtn').disabled = true;
 
             try {
-                const res = await fetch(API_BASE + '/qa', {
+                const res = await authFetch(API_BASE + '/qa', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ query, brand, model })
@@ -904,6 +1717,7 @@
                 }
             } catch (err) {
                 removeLoading(loadingId);
+                if (err.message === '请先登录' || err.message === '认证已过期，请重新登录') return;
                 addMessage('assistant', '❌ 网络错误，请检查服务是否运行', [], { query, brand, model });
             }
 
@@ -1003,7 +1817,7 @@
             btn.textContent = '查询中...';
 
             try {
-                const res = await fetch(API_BASE + '/qa/error-code', {
+                const res = await authFetch(API_BASE + '/qa/error-code', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ code, model })
@@ -1045,7 +1859,12 @@
                         </button>
                     `;
                 }
-            } catch {
+            } catch (err) {
+                if (err.message === '请先登录' || err.message === '认证已过期，请重新登录') {
+                    btn.disabled = false;
+                    btn.textContent = '查询故障代码';
+                    return;
+                }
                 const resultDiv = document.getElementById('errorResult');
                 resultDiv.classList.add('show');
                 document.getElementById('errorResultBadge').innerHTML = '';
@@ -1115,7 +1934,7 @@
             formData.append('uploader', document.getElementById('uploadUploader').value.trim());
 
             try {
-                const res = await fetch(API_BASE + '/document/upload', { method: 'POST', body: formData });
+                const res = await authFetch(API_BASE + '/document/upload', { method: 'POST', body: formData });
                 const data = await res.json();
                 if (data.code === 200) {
                     alert('✅ 文档上传成功，正在后台处理');
@@ -1124,8 +1943,10 @@
                 } else {
                     alert('❌ ' + (data.message || '上传失败'));
                 }
-            } catch {
-                alert('❌ 网络错误');
+            } catch (err) {
+                if (err.message !== '请先登录' && err.message !== '认证已过期，请重新登录') {
+                    alert('❌ 网络错误');
+                }
             }
 
             btn.disabled = false;
@@ -1134,7 +1955,7 @@
 
         async function loadDocuments() {
             try {
-                const res = await fetch(API_BASE + '/documents?page=1&page_size=50');
+                const res = await authFetch(API_BASE + '/documents?page=1&page_size=50');
                 const data = await res.json();
                 const tbody = document.getElementById('docTableBody');
 
@@ -1168,7 +1989,7 @@
         async function deleteDoc(id) {
             if (!confirm('确定要删除这个文档吗？')) return;
             try {
-                await fetch(API_BASE + '/document/' + id, { method: 'DELETE' });
+                await authFetch(API_BASE + '/document/' + id, { method: 'DELETE' });
                 loadDocuments();
             } catch { alert('删除失败'); }
         }
@@ -1192,8 +2013,20 @@
         }
 
         // ==================== 初始化 ====================
-        checkHealth();
-        setInterval(checkHealth, 30000);
+        (function init() {
+            checkHealth();
+            setInterval(checkHealth, 30000);
+
+            // 检查登录状态
+            if (TokenManager.isLoggedIn()) {
+                hideAuthOverlay();
+                updateUserUI();
+                // 后台验证 Token 有效性
+                fetchUserInfo().then(() => updateUserUI());
+            } else {
+                showAuthOverlay();
+            }
+        })();
     </script>
 </body>
 </html>

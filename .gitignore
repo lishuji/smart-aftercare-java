@@ -1,0 +1,28 @@
+# Maven
+target/
+
+# IDE
+.idea/
+*.iml
+.vscode/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+logs/
+*.log
+
+# Uploads
+uploads/
+
+# Environment
+.env
+
+# Build
+*.jar
+*.war
+*.class

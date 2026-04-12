@@ -1,0 +1,82 @@
+server:
+  port: ${SERVER_PORT:8000}
+  shutdown: graceful
+
+spring:
+  application:
+    name: smart-aftercare
+  datasource:
+    url: jdbc:mysql://${MYSQL_HOST:localhost}:${MYSQL_PORT:3306}/${MYSQL_DB:smart_aftercare}?useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Shanghai&useSSL=false&allowPublicKeyRetrieval=true
+    username: ${MYSQL_USER:root}
+    password: ${MYSQL_PASSWORD:123456}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    hikari:
+      maximum-pool-size: ${MYSQL_MAX_OPEN_CONNS:20}
+      minimum-idle: ${MYSQL_MAX_IDLE_CONNS:10}
+      max-lifetime: 1800000
+      connection-timeout: 30000
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: false
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQLDialect
+        format_sql: true
+  data:
+    redis:
+      host: ${REDIS_HOST:localhost}
+      port: ${REDIS_PORT:6379}
+      password: ${REDIS_PASSWORD:}
+      database: ${REDIS_DB:0}
+      lettuce:
+        pool:
+          max-active: ${REDIS_POOL_SIZE:10}
+          max-idle: 5
+          min-idle: 1
+  servlet:
+    multipart:
+      max-file-size: 50MB
+      max-request-size: 50MB
+  lifecycle:
+    timeout-per-shutdown-phase: 5s
+
+# 自定义配置
+app:
+  milvus:
+    host: ${MILVUS_HOST:localhost}
+    port: ${MILVUS_PORT:19530}
+    collection-name: ${MILVUS_COLLECTION:appliance_knowledge}
+  minio:
+    endpoint: ${MINIO_ENDPOINT:http://localhost:9000}
+    access-key: ${MINIO_ACCESS_KEY:minioadmin}
+    secret-key: ${MINIO_SECRET_KEY:minioadmin}
+    bucket: ${MINIO_BUCKET:appliance-screenshots}
+    use-ssl: ${MINIO_USE_SSL:false}
+  doubao:
+    api-key: ${DOUBAO_API_KEY:}
+    chat-model: ${DOUBAO_CHAT_MODEL:}
+    embedding-model: ${DOUBAO_EMBEDDING_MODEL:}
+    temperature: ${DOUBAO_TEMPERATURE:0.1}
+    max-token: ${DOUBAO_MAX_TOKEN:2048}
+    base-url: https://ark.cn-beijing.volces.com/api/v3
+
+# SpringDoc (Swagger UI)
+springdoc:
+  api-docs:
+    path: /v3/api-docs
+  swagger-ui:
+    path: /swagger/index.html
+    tags-sorter: alpha
+    operations-sorter: method
+
+# Logging
+logging:
+  level:
+    root: INFO
+    com.smartaftercare: INFO
+  file:
+    name: logs/app.log
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"
+    file: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"

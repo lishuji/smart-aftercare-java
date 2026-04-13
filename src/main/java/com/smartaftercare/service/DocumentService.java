@@ -14,17 +14,21 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.pdfbox.Loader;
 import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.rendering.PDFRenderer;
 import org.apache.pdfbox.text.PDFTextStripper;
 import org.apache.poi.hwpf.HWPFDocument;
 import org.apache.poi.hwpf.extractor.WordExtractor;
 import org.apache.poi.xwpf.usermodel.XWPFDocument;
 import org.apache.poi.xwpf.usermodel.XWPFParagraph;
+import net.sourceforge.tess4j.Tesseract;
+import net.sourceforge.tess4j.TesseractException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.awt.image.BufferedImage;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -369,12 +373,58 @@ public class DocumentService {
 
     /**
      * 从 PDF 文件提取文本
+     * <p>
+     * 优先使用 PDFBox 直接提取文本层；如果文本为空（扫描件/图片型 PDF），
+     * 则自动回退到 Tesseract OCR 逐页渲染图片并进行文字识别。
      */
     private String extractTextFromPdf(String filePath) throws IOException {
         try (PDDocument document = Loader.loadPDF(new java.io.File(filePath))) {
+            // 先尝试直接提取文本
             PDFTextStripper stripper = new PDFTextStripper();
-            return stripper.getText(document);
+            String text = stripper.getText(document);
+
+            if (text != null && !text.isBlank()) {
+                log.info("PDF 文本层提取成功，共 {} 字符", text.length());
+                return text;
+            }
+
+            // 文本为空，回退到 OCR
+            log.info("PDF 文本层为空（扫描件/图片型），启动 OCR 识别，共 {} 页", document.getNumberOfPages());
+            return extractTextFromPdfByOcr(document);
         }
+    }
+
+    /**
+     * 使用 Tesseract OCR 从图片型 PDF 中提取文字
+     * <p>
+     * 将每页渲染为 300 DPI 图片，然后用 Tesseract 进行中英文混合识别。
+     */
+    private String extractTextFromPdfByOcr(PDDocument document) throws IOException {
+        Tesseract tesseract = new Tesseract();
+        tesseract.setDatapath("/opt/homebrew/share/tessdata");
+        tesseract.setLanguage("chi_sim+eng");  // 中文简体 + 英文
+        tesseract.setPageSegMode(6);  // 假设为统一的文本块
+
+        PDFRenderer renderer = new PDFRenderer(document);
+        StringBuilder sb = new StringBuilder();
+        int totalPages = document.getNumberOfPages();
+
+        for (int i = 0; i < totalPages; i++) {
+            try {
+                BufferedImage image = renderer.renderImageWithDPI(i, 300); // 300 DPI 保证清晰度
+                String pageText = tesseract.doOCR(image);
+                if (pageText != null && !pageText.isBlank()) {
+                    sb.append(pageText).append("\n");
+                }
+                log.debug("OCR 第 {} 页完成，提取 {} 字符", i + 1, pageText != null ? pageText.length() : 0);
+            } catch (TesseractException e) {
+                log.warn("OCR 第 {} 页失败: {}", i + 1, e.getMessage());
+            }
+        }
+
+        String result = sb.toString().strip();
+        log.info("OCR 识别完成，共提取 {} 字符", result.length());
+        return result;
     }
 
     /**

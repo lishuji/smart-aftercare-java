@@ -128,6 +128,13 @@
             <version>3.0.3</version>
         </dependency>
 
+        <!-- Tess4J (OCR - 扫描件/图片型 PDF 文字识别) -->
+        <dependency>
+            <groupId>net.sourceforge.tess4j</groupId>
+            <artifactId>tess4j</artifactId>
+            <version>5.13.0</version>
+        </dependency>
+
         <!-- Apache POI (DOC/DOCX 文本提取) -->
         <dependency>
             <groupId>org.apache.poi</groupId>

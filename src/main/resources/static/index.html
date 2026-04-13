@@ -1963,11 +1963,20 @@
                     tbody.innerHTML = data.data.list.map(doc => `
                         <tr>
                             <td>${doc.filename}</td>
-                            <td>${doc.brand}</td>
-                            <td>${doc.model}</td>
+                            <td>${doc.brand || '-'}</td>
+                            <td>${doc.model || '-'}</td>
                             <td><span class="status-badge ${doc.status}">${statusText(doc.status)}</span></td>
                             <td>${formatDate(doc.upload_time)}</td>
-                            <td><button class="delete-btn" onclick="deleteDoc(${doc.id})">删除</button></td>
+                            <td>
+                                ${doc.status === 'failed' ? `<button class="retry-btn" onclick="retryDoc(this, ${doc.id})">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <polyline points="23 4 23 10 17 10"></polyline>
+                                        <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path>
+                                    </svg>
+                                    重试
+                                </button>` : ''}
+                                <button class="delete-btn" onclick="deleteDoc(${doc.id})">删除</button>
+                            </td>
                         </tr>
                     `).join('');
                 } else {
@@ -1992,6 +2001,26 @@
                 await authFetch(API_BASE + '/document/' + id, { method: 'DELETE' });
                 loadDocuments();
             } catch { alert('删除失败'); }
+        }
+
+        async function retryDoc(btn, id) {
+            btn.classList.add('retrying');
+            btn.disabled = true;
+            try {
+                const res = await authFetch(API_BASE + '/document/' + id + '/retry', { method: 'POST' });
+                const data = await res.json();
+                if (data.code === 200) {
+                    loadDocuments();
+                } else {
+                    alert('重试失败: ' + (data.message || '未知错误'));
+                    btn.classList.remove('retrying');
+                    btn.disabled = false;
+                }
+            } catch {
+                alert('重试请求失败');
+                btn.classList.remove('retrying');
+                btn.disabled = false;
+            }
         }
 
         // ==================== 工具函数 ====================

@@ -40,10 +40,10 @@ public class Document {
     @Column(name = "file_type", nullable = false, length = 20)
     private String fileType = "pdf";
 
-    @Column(nullable = false, length = 100)
+    @Column(length = 100)
     private String brand;
 
-    @Column(nullable = false, length = 100)
+    @Column(length = 100)
     private String model;
 
     @Column(length = 100)

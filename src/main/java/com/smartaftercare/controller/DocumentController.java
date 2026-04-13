@@ -35,11 +35,11 @@ public class DocumentController {
     private static final long MAX_FILE_SIZE = 50L * 1024 * 1024; // 50MB
 
     @PostMapping("/document/upload")
-    @Operation(summary = "上传文档", description = "上传家电说明书文档（PDF/DOC/DOCX/TXT），系统将异步解析、切片、向量化入库")
+    @Operation(summary = "上传文档", description = "上传家电说明书文档（PDF/DOC/DOCX/TXT），系统将异步解析、切片、向量化入库。品牌和型号可选，未提供时系统将通过 AI 自动从文档内容中识别。")
     public ResponseEntity<Map<String, Object>> uploadDocument(
             @Parameter(description = "上传的文件") @RequestParam("file") MultipartFile file,
-            @Parameter(description = "品牌名称") @RequestParam("brand") String brand,
-            @Parameter(description = "型号") @RequestParam("model") String model,
+            @Parameter(description = "品牌名称（可选，未填写时 AI 自动识别）") @RequestParam(value = "brand", required = false) String brand,
+            @Parameter(description = "型号（可选，未填写时 AI 自动识别）") @RequestParam(value = "model", required = false) String model,
             @Parameter(description = "上传人") @RequestParam(value = "uploader", required = false) String uploader) {
 
         // 校验文件类型
@@ -59,19 +59,25 @@ public class DocumentController {
         }
 
         try {
-            // 保存到本地上传目录
-            Path uploadDir = Path.of("./uploads");
+            // 保存到本地上传目录（使用绝对路径，避免 Tomcat 临时目录问题）
+            Path uploadDir = Path.of(System.getProperty("user.dir"), "uploads").toAbsolutePath();
             Files.createDirectories(uploadDir);
-            String saveName = brand + "_" + model + "_" + filename;
-            Path savePath = uploadDir.resolve(saveName);
+            // 文件名前缀使用时间戳，避免 brand/model 为空时命名冲突
+            String prefix = (brand != null && !brand.isBlank() ? brand : "auto") + "_"
+                    + (model != null && !model.isBlank() ? model : "auto") + "_";
+            String saveName = prefix + filename;
+            Path savePath = uploadDir.resolve(saveName).toAbsolutePath();
             file.transferTo(savePath.toFile());
 
-            // 调用文档处理服务
+            // 调用文档处理服务（brand/model 为空时将由 AI 自动识别）
             Document doc = documentService.uploadAndProcess(savePath.toString(), brand, model, uploader);
 
             Map<String, Object> response = new LinkedHashMap<>();
             response.put("code", 200);
-            response.put("message", "文档上传成功，正在后台处理");
+            boolean autoDetect = (brand == null || brand.isBlank()) || (model == null || model.isBlank());
+            response.put("message", autoDetect
+                    ? "文档上传成功，正在后台处理（AI 将自动识别品牌和型号）"
+                    : "文档上传成功，正在后台处理");
             response.put("data", doc);
             return ResponseEntity.ok(response);
 
@@ -112,6 +118,31 @@ public class DocumentController {
         data.put("page_size", pageSize);
 
         return ResponseEntity.ok(Map.of("code", 200, "data", data));
+    }
+
+    @PostMapping("/document/{id}/retry")
+    @Operation(summary = "重试文档处理", description = "对处理失败的文档重新触发异步解析流程")
+    public ResponseEntity<Map<String, Object>> retryDocument(
+            @Parameter(description = "文档 ID") @PathVariable Long id) {
+
+        try {
+            Document doc = documentService.retryDocument(id);
+            Map<String, Object> response = new LinkedHashMap<>();
+            response.put("code", 200);
+            response.put("message", "已重新提交处理");
+            response.put("data", doc);
+            return ResponseEntity.ok(response);
+        } catch (IllegalStateException e) {
+            return ResponseEntity.badRequest()
+                    .body(Map.of("code", 400, "message", e.getMessage()));
+        } catch (NoSuchElementException e) {
+            return ResponseEntity.status(404)
+                    .body(Map.of("code", 404, "message", "文档不存在"));
+        } catch (Exception e) {
+            log.error("重试文档处理失败: {}", e.getMessage());
+            return ResponseEntity.internalServerError()
+                    .body(Map.of("code", 500, "message", "重试失败: " + e.getMessage()));
+        }
     }
 
     @DeleteMapping("/document/{id}")
